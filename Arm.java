@@ -76,7 +76,7 @@ public class Arm {
         double motorRightToolMidpointY = (toolY + motorRightY)/2;
 
         //calculate distance between the midpoints and joints
-        double midpointJointDistance = Math.sqrt( Math.pow(armRadius, 2) - Math.pow(toolMotorDistance, 2));
+        double midpointJointDistance = Math.sqrt( Math.pow(armRadius, 2) - Math.pow(toolMotorDistance/2, 2));
 
         //angle between motors and first pen coord
         double motorJointAngle = Math.acos((motorRightX - toolX)/motorDistance);
@@ -103,7 +103,7 @@ public class Arm {
         double motorLeftToolMidpointY = (toolY + motorLeftY)/2;
 
         //calculate distance between the midpoints and joints
-        double midpointJointDistance = Math.sqrt( Math.pow(armRadius, 2) - Math.pow(toolMotorDistance, 2));
+        double midpointJointDistance = Math.sqrt( Math.pow(armRadius, 2) - Math.pow(toolMotorDistance/2, 2));
 
         //angle between motors and first pen coord
         double motorJointAngle = Math.acos((motorLeftX - toolX)/motorDistance);
