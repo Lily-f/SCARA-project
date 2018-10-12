@@ -51,8 +51,11 @@ public class Arm {
     //constructor
     private Arm() {
 
+        //create a new ImageProcessor object, and get the first image to load
+        ImageProcessor imageProcessor = new ImageProcessor();
+
         //drawTriangle();
-        drawLine();
+        //drawLine();
 
     }
 
@@ -133,37 +136,6 @@ public class Arm {
             writer.close();
         }catch(IOException e ){System.out.println("FileWrite IOExecption" + e);}
 
-    }
-
-
-    //loads ppm image and stores as 2d arrayList
-    private void storeImage(String filename) {
-        try{
-            ArrayList<ArrayList<Double>> image = new ArrayList<>();
-            Scanner scan = new Scanner(new File(filename));
-            while(scan.hasNext()){
-                scan.next();    //is the file type
-                int numberOfRows = scan.nextInt();
-                int numberOfCols = scan.nextInt();
-                int maxValue = scan.nextInt();
-
-                //make the 2d array have the right number of collumns
-                for(int i = 0; i < numberOfCols; i ++){
-                    image.add( new ArrayList<>());
-                }
-
-                //store in the values to the array
-                for(int row = 0; row < numberOfRows; row ++){
-                    for(int col = 0; col < numberOfCols; col ++){
-
-                    }
-                }
-            }
-
-
-        }catch (IOException e){
-            System.out.println(e);
-        }
     }
 
 
