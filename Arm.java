@@ -40,7 +40,7 @@ public class Arm {
 
     //fields
     private int penDown = 1500;
-    private int penUp = 1500;
+    private int penUp = 1300;
     private int motorLeftX = 270;
     private int motorLeftY = 480;
     private int motorRightX = 400;
@@ -52,12 +52,15 @@ public class Arm {
     private Arm() {
 
         //create a new ImageProcessor object, and get the first image to load
-        ImageProcessor imageProcessor = new ImageProcessor();
+        //ImageProcessor imageProcessor = new ImageProcessor();
 
         //drawTriangle();
-        //drawLine();
+        drawLine(2);
 
     }
+    
+    //draw a circle
+     
 
     //draw a triangle
     private void drawTriangle() {
@@ -97,7 +100,7 @@ public class Arm {
     }
 
     //Draw Line
-    private void drawLine() {
+    private void drawLine(int direction) {
 
         //create a file for storing the pwm values
         try {
@@ -106,16 +109,110 @@ public class Arm {
             //create an arraylist of coordinates (each coordinate is an array with an x and y value)
             List<double[]> coordinates = new ArrayList<>();
 
-            //loop through some coordinates for a straight line.
-            int y = 190;
-            while(y < 300){
 
-                //increment y
-                y += 2;
+			if(direction == 0){
+				//loop through some coordinates for a straight horizontal line.
+				int x = 280; // x value must be greater than or equal to 280
+				while(x < 350){
 
-                //add new coordinates to arraylist
-                coordinates.add(new double[]{330, y});
-            }
+					//increment x
+					x += 2;
+
+					//add new coordinates to arraylist
+					coordinates.add(new double[]{x, 120});
+				}
+			}
+			else if (direction == 1){
+				//loop through some coordinates for a straight  vertical line.
+				int y = 100;
+				while(y < 200){ // max y cannot be any greater than 200 to avoid singularity
+
+					//increment y
+					y += 2;
+
+					// add new coordinates to arraylist
+					coordinates.add(new double[]{300, y});
+				}
+			}
+			else if (direction == 2){
+				//loop through some coordinates for a diagonal line.
+				int y = 100;
+				int x = 280;
+				while(y < 200 && x < 350){
+
+					//increment x and y
+					y += 2;
+					x += 2;
+
+					// add new coordinates to arraylist
+					coordinates.add(new double[]{x, y});
+				}
+			}
+			
+			else if (direction == 3){
+				//loop through some coordinates for a square line of 70px/70px
+				int y = 100;
+				int x = 280;
+				
+				while(x < 350){
+
+					//increment x
+					x += 2;
+
+					// add new coordinates to arraylist
+					coordinates.add(new double[]{x, y});
+				}
+				while(y < 170){
+
+					//increment y
+					y += 2;
+
+					// add new coordinates to arraylist
+					coordinates.add(new double[]{x, y});
+				}
+				while(x > 280){
+
+					//increment x
+					x -= 2;
+
+					// add new coordinates to arraylist
+					coordinates.add(new double[]{x, y});
+				}
+				while(y > 100){
+
+					//increment y
+					y -= 2;
+
+					// add new coordinates to arraylist
+					coordinates.add(new double[]{x, y});
+				}
+				
+				
+			}
+			
+			else if (direction == 4){
+				//loop through some coordinates for a circular line.
+				int centerX = 325;
+				int centerY = 135;
+				int radius = 20;
+				for(double i = 0; i < 360; i += 2){
+					
+					double x = 0.9 * radius * Math.cos(Math.toRadians(i)) + centerX;
+					double y = radius * Math.sin(Math.toRadians(i)) + centerY;
+					
+					// add new coordinates to arraylist
+					coordinates.add(new double[]{x, y});
+				}
+			}
+			
+			//pen up for first value
+			double[] firstCoordinate = coordinates.get(0);
+			double firstLeftArmAngle = findLeftArmAngle(firstCoordinate[0], firstCoordinate[1]);
+			double firstRightArmAngle = findRightArmAngle(firstCoordinate[0], firstCoordinate[1]);
+			double firstLeftPwmValue = leftAnglePwmConverter(firstLeftArmAngle);
+			double firstRightPwmValue = rightAnglePwmConverter(firstRightArmAngle);
+			writer.println( (int)firstLeftPwmValue + "," + (int)firstRightPwmValue + "," + penUp);
+
 
             //Calculate motor control signals and print to writer
             for(double[] coordinate : coordinates){
@@ -123,14 +220,18 @@ public class Arm {
 
                 double leftArmAngle = findLeftArmAngle(coordinate[0], coordinate[1]);
                 double rightArmAngle = findRightArmAngle(coordinate[0], coordinate[1]);
-
+                
                 System.out.println("Left angle: " + leftArmAngle + ". Right angle: " + rightArmAngle);
 
                 double leftPwmValue = leftAnglePwmConverter(leftArmAngle);
                 double rightPwmValue = rightAnglePwmConverter(rightArmAngle);
 
                 writer.println( (int)leftPwmValue + "," + (int)rightPwmValue + "," + penDown);
+                if (coordinate == coordinates.get(coordinates.size() - 1)){
+					writer.println( (int)leftPwmValue + "," + (int)rightPwmValue + "," + penUp);
+				}
             }
+            
 
             writer.flush();
             writer.close();
