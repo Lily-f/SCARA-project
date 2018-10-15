@@ -94,17 +94,52 @@ public class Arm {
 				double y = radius * Math.sin(Math.toRadians(i)) + centerY;
 
 				// add new coordinates to arrayList
-				coordinates.add(new double[]{x, y});
+				coordinates.add(new double[]{x, y, PEN_DOWN});
 			}
 		}
 
 		else if (direction == 5) {
 			//loop through some coordinates for 'SKYNET' letters drawing.
-			int x = 170;
-			int y = 290;
+			int xOffSet = 280;
+			int yOffSet = 100;
 
-			
+			// Letter 'S'
+			getCoords(12 + xOffSet, 0 + yOffSet, 0 + xOffSet, 0 + yOffSet);		//top horizontal
+			getCoords(0 + xOffSet, 0 + yOffSet, 0 + xOffSet, 9 + yOffSet);    	//top vertical
+			getCoords(0 + xOffSet, 9 + yOffSet, 12 + xOffSet, 9 + yOffSet);	  	//middle horizontal
+			getCoords(12 + xOffSet, 9 + yOffSet, 12 + xOffSet, 18 + yOffSet); 	//bottom vertical
+			getCoords(12 + xOffSet, 18 + yOffSet, 0 + xOffSet, 18 + yOffSet);
+			coordinates.add(new double[]{0 + xOffSet, 18 + yOffSet, PEN_UP});
 
+			// Letter 'K'
+			getCoords(18 + xOffSet, 0 + yOffSet, 18 + xOffSet, 18 + yOffSet);	//left vertical
+			getCoords(18 + xOffSet, 9 + yOffSet, 30 + xOffSet, 0 + yOffSet); 	//middle to top diagonal
+			getCoords(18 + xOffSet, 9 + yOffSet, 30 + xOffSet, 18 + yOffSet);	//middle to bottom diagonal
+			//MUST CHANGE THIS FOR NEXT DRAWING POS
+			coordinates.add(new double[]{30 + xOffSet, 18 + yOffSet, PEN_UP});
+
+			// Letter 'Y'
+			getCoords(36 + xOffSet, 0 + yOffSet, 42 + xOffSet, 9 + yOffSet);	 	//left arm
+			getCoords(36 + xOffSet, 18 + yOffSet, 48 + xOffSet, 0 + yOffSet);	//Right arm
+			coordinates.add(new double[]{48 + xOffSet, 0 + yOffSet, PEN_UP});
+
+			// Letter 'N'
+			getCoords(54 + xOffSet, 18 + yOffSet, 54 + xOffSet, 0 + yOffSet);	//Left vertical leg
+			getCoords(54 + xOffSet, 0 + yOffSet, 66 + xOffSet, 18 + yOffSet);	//Middle diagonal
+			getCoords(66 + xOffSet, 18 + yOffSet, 66 + xOffSet, 0 + yOffSet);	//Right vertical leg
+			coordinates.add(new double[]{66 + xOffSet, 0 + yOffSet, PEN_UP});
+
+			// Letter 'E'
+			getCoords(84 + xOffSet, 0 + yOffSet, 72 + xOffSet, 0 + yOffSet);		//Top horizontal
+			getCoords(72 + xOffSet, 0 + yOffSet, 72 + xOffSet, 18 + yOffSet);	//Left vertical
+			getCoords(72 + xOffSet, 18 + yOffSet, 84 + xOffSet, 18 + yOffSet);	//Bottom horizontal
+			getCoords(72 + xOffSet, 9 + yOffSet, 84 + xOffSet, 9 + yOffSet);		//Middle horizonatal
+			coordinates.add(new double[]{84 + xOffSet, 9 + yOffSet, PEN_UP});
+
+			// Letter 'T'
+			getCoords(90 + xOffSet, 0 + yOffSet, 102 + xOffSet, 0 + yOffSet);	//Top horizontal
+			getCoords(96 + xOffSet, 0 + yOffSet, 96 + xOffSet, 18 + yOffSet);	//Middle vertical
+			coordinates.add(new double[]{96 + xOffSet, 18 + yOffSet, PEN_UP});
 		}
 
 
@@ -122,11 +157,13 @@ public class Arm {
 	private void getCoords(double startX, double startY, double endX, double endY){
 
 		//number of points that make up the line
-		int lineSplit = 100;
+		int lineSplit = 20;
 
 		//calculate the gradient between end and start points
 		double xGradient = endX - startX;
 		double yGradient = endY - startY;
+		System.out.println("xGradient: " + xGradient);
+        System.out.println("yGradient: " + yGradient);
 
 		//check if x gradient is negative. if not then want positive increment
         if(startX < endX) {
@@ -139,7 +176,7 @@ public class Arm {
                     startY += yGradient / lineSplit;
 
                     // add new coordinates to arraylist
-                    coordinates.add(new double[]{startX, startY});
+                    coordinates.add(new double[]{startX, startY, PEN_DOWN});
                 }
             }
             //else want negative y increment
@@ -149,10 +186,10 @@ public class Arm {
 
                     //increment x and y
                     startX += xGradient / lineSplit;
-                    startY -= yGradient / lineSplit;
+                    startY += yGradient / lineSplit;
 
                     // add new coordinates to arrayList
-                    coordinates.add(new double[]{startX, startY});
+                    coordinates.add(new double[]{startX, startY, PEN_DOWN});
                 }
             }
         }
@@ -163,11 +200,11 @@ public class Arm {
                 while (startX >= endX && startY <= endY) {
 
                     //increment x and y
-                    startX -= xGradient / lineSplit;
+                    startX += xGradient / lineSplit;
                     startY += yGradient / lineSplit;
 
                     // add new coordinates to arrayList
-                    coordinates.add(new double[]{startX, startY});
+                    coordinates.add(new double[]{startX, startY, PEN_DOWN});
                 }
             }
             else {
@@ -175,11 +212,11 @@ public class Arm {
                 while (startX >= endX && startY >= endY) {
 
                     //increment x and y
-                    startX -= xGradient / lineSplit;
-                    startY -= yGradient / lineSplit;
+                    startX += xGradient / lineSplit;
+                    startY += yGradient / lineSplit;
 
                     // add new coordinates to arrayList
-                    coordinates.add(new double[]{startX, startY});
+                    coordinates.add(new double[]{startX, startY, PEN_DOWN});
                 }
             }
         }
@@ -195,7 +232,7 @@ public class Arm {
 			double firstLeftPwmValue = leftAnglePwmConverter(firstLeftArmAngle);
 			double firstRightPwmValue = rightAnglePwmConverter(firstRightArmAngle);
 			PrintStream writer = new PrintStream(new FileOutputStream(new File("drawLine.txt")));
-			writer.println( (int)firstLeftPwmValue + "," + (int)firstRightPwmValue + "," + PEN_UP);
+			writer.println((int) firstLeftPwmValue + "," + (int) firstRightPwmValue + "," + PEN_UP);
 
 
 			//Calculate motor control signals and print to writer
@@ -210,9 +247,12 @@ public class Arm {
 				double leftPwmValue = leftAnglePwmConverter(leftArmAngle);
 				double rightPwmValue = rightAnglePwmConverter(rightArmAngle);
 
+				if (coordinate[2] == PEN_UP){
+					writer.println((int) leftPwmValue + "," + (int) rightPwmValue + "," + PEN_UP);
+				}
 				writer.println( (int)leftPwmValue + "," + (int)rightPwmValue + "," + PEN_DOWN);
 				if (coordinate == coordinates.get(coordinates.size() - 1)){
-					writer.println( (int)leftPwmValue + "," + (int)rightPwmValue + "," + PEN_UP);
+					writer.println((int) leftPwmValue + "," + (int) rightPwmValue + "," + PEN_UP);
 				}
 			}
 
