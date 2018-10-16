@@ -33,9 +33,7 @@ public class Arm {
 	private static final int PEN_DOWN = 1500;
 	private static final int PEN_UP = 1300;
 	private int motorLeftX = 270;
-	private int motorLeftY = 480;
 	private int motorRightX = 400;
-	private int motorRightY = 480;
 	private int motorDistance = motorRightX - motorLeftX;  //unit = pixels
 	private int armRadius = 200; //unit = pixels
 
@@ -46,11 +44,11 @@ public class Arm {
 	private Arm() {
 
 		//create a new ImageProcessor object, and get the first image to load
-		//ImageProcessor imageProcessor = new ImageProcessor();
+		ImageProcessor imageProcessor = new ImageProcessor();
 
         //get user input on what type of thing to draw
         Scanner input = new Scanner(System.in);
-        System.out.println("Enter 0 to 5 inclusive for horizontal/vertical/diagonal/square/circle: ");
+        System.out.println("Enter 0 to 5 inclusive for horizontal/vertical/diagonal/square/circle (-1 for nothing): ");
         int direction = input.nextInt();
         input.close();
 
@@ -66,14 +64,17 @@ public class Arm {
 			//using the getCoords method
 			getCoords(280, 120, 350, 120);
 		}
+
 		//draws a vertical line
 		else if (direction == 1){
 			getCoords(300, 100, 300, 200);
 		}
+
 		//draws a diagonal line
 		else if (direction == 2){
 			getCoords(280, 100, 350, 200);
 		}
+
         //draws a rectangle
 		else if (direction == 3){
 			//loop through some coordinates for a square line of 70px/70px
@@ -83,8 +84,8 @@ public class Arm {
 			getCoords(280, 170, 280, 100);	//left vertical
 		}
 
+        //loop through some coordinates for a circular line.
 		else if (direction == 4){
-			//loop through some coordinates for a circular line.
 			int centerX = 325;
 			int centerY = 135;
 			int radius = 20;
@@ -98,57 +99,65 @@ public class Arm {
 			}
 		}
 
+        //loop through some coordinates for 'SKYNET' letters drawing.
 		else if (direction == 5) {
-			//loop through some coordinates for 'SKYNET' letters drawing.
+			//offset to draw word in middle of page
 			int xOffSet = 280;
 			int yOffSet = 100;
 
 			// Letter 'S'
-			getCoords(12 + xOffSet, 0 + yOffSet, 0 + xOffSet, 0 + yOffSet);		//top horizontal
-			getCoords(0 + xOffSet, 0 + yOffSet, 0 + xOffSet, 9 + yOffSet);    	//top vertical
-			getCoords(0 + xOffSet, 9 + yOffSet, 12 + xOffSet, 9 + yOffSet);	  	//middle horizontal
+			getCoords(12 + xOffSet, yOffSet, xOffSet, yOffSet);		//top horizontal
+			getCoords(xOffSet, yOffSet, xOffSet, 9 + yOffSet);    	//top vertical
+			getCoords(xOffSet, 9 + yOffSet, 12 + xOffSet, 9 + yOffSet);	  	//middle horizontal
 			getCoords(12 + xOffSet, 9 + yOffSet, 12 + xOffSet, 18 + yOffSet); 	//bottom vertical
-			getCoords(12 + xOffSet, 18 + yOffSet, 0 + xOffSet, 18 + yOffSet);
-			coordinates.add(new double[]{0 + xOffSet, 18 + yOffSet, PEN_UP});
+			getCoords(12 + xOffSet, 18 + yOffSet, xOffSet, 18 + yOffSet);
+			coordinates.add(new double[]{xOffSet, 18 + yOffSet, PEN_UP});
 
 			// Letter 'K'
-			getCoords(18 + xOffSet, 0 + yOffSet, 18 + xOffSet, 18 + yOffSet);	//left vertical
-			getCoords(18 + xOffSet, 9 + yOffSet, 30 + xOffSet, 0 + yOffSet); 	//middle to top diagonal
+			coordinates.add(new double[]{18 + xOffSet, yOffSet, PEN_UP});
+			getCoords(18 + xOffSet, yOffSet, 18 + xOffSet, 18 + yOffSet);	//left vertical
+			getCoords(18 + xOffSet, 9 + yOffSet, 30 + xOffSet, yOffSet); 	//middle to top diagonal
 			getCoords(18 + xOffSet, 9 + yOffSet, 30 + xOffSet, 18 + yOffSet);	//middle to bottom diagonal
 			//MUST CHANGE THIS FOR NEXT DRAWING POS
 			coordinates.add(new double[]{30 + xOffSet, 18 + yOffSet, PEN_UP});
 
 			// Letter 'Y'
-			getCoords(36 + xOffSet, 0 + yOffSet, 42 + xOffSet, 9 + yOffSet);	 	//left arm
-			getCoords(36 + xOffSet, 18 + yOffSet, 48 + xOffSet, 0 + yOffSet);	//Right arm
-			coordinates.add(new double[]{48 + xOffSet, 0 + yOffSet, PEN_UP});
+            coordinates.add(new double[]{36 + xOffSet, yOffSet, PEN_UP});
+			getCoords(36 + xOffSet, yOffSet, 42 + xOffSet, 9 + yOffSet);	 	//left arm
+			getCoords(36 + xOffSet, 18 + yOffSet, 48 + xOffSet, yOffSet);	//Right arm
+			coordinates.add(new double[]{48 + xOffSet, yOffSet, PEN_UP});
 
 			// Letter 'N'
-			getCoords(54 + xOffSet, 18 + yOffSet, 54 + xOffSet, 0 + yOffSet);	//Left vertical leg
-			getCoords(54 + xOffSet, 0 + yOffSet, 66 + xOffSet, 18 + yOffSet);	//Middle diagonal
-			getCoords(66 + xOffSet, 18 + yOffSet, 66 + xOffSet, 0 + yOffSet);	//Right vertical leg
-			coordinates.add(new double[]{66 + xOffSet, 0 + yOffSet, PEN_UP});
+            coordinates.add(new double[]{54 + xOffSet, 18 + yOffSet, PEN_UP});
+			getCoords(54 + xOffSet, 18 + yOffSet, 54 + xOffSet, yOffSet);	//Left vertical leg
+			getCoords(54 + xOffSet, yOffSet, 66 + xOffSet, 18 + yOffSet);	//Middle diagonal
+			getCoords(66 + xOffSet, 18 + yOffSet, 66 + xOffSet, yOffSet);	//Right vertical leg
+			coordinates.add(new double[]{66 + xOffSet, yOffSet, PEN_UP});
 
 			// Letter 'E'
-			getCoords(84 + xOffSet, 0 + yOffSet, 72 + xOffSet, 0 + yOffSet);		//Top horizontal
-			getCoords(72 + xOffSet, 0 + yOffSet, 72 + xOffSet, 18 + yOffSet);	//Left vertical
+            coordinates.add(new double[]{84 + xOffSet, yOffSet, PEN_UP});
+			getCoords(84 + xOffSet, yOffSet, 72 + xOffSet, yOffSet);		//Top horizontal
+			getCoords(72 + xOffSet, yOffSet, 72 + xOffSet, 18 + yOffSet);	//Left vertical
 			getCoords(72 + xOffSet, 18 + yOffSet, 84 + xOffSet, 18 + yOffSet);	//Bottom horizontal
 			getCoords(72 + xOffSet, 9 + yOffSet, 84 + xOffSet, 9 + yOffSet);		//Middle horizonatal
 			coordinates.add(new double[]{84 + xOffSet, 9 + yOffSet, PEN_UP});
 
 			// Letter 'T'
-			getCoords(90 + xOffSet, 0 + yOffSet, 102 + xOffSet, 0 + yOffSet);	//Top horizontal
-			getCoords(96 + xOffSet, 0 + yOffSet, 96 + xOffSet, 18 + yOffSet);	//Middle vertical
+            coordinates.add(new double[]{90 + xOffSet, yOffSet, PEN_UP});
+			getCoords(90 + xOffSet, yOffSet, 102 + xOffSet, yOffSet);	//Top horizontal
+			getCoords(96 + xOffSet, yOffSet, 96 + xOffSet, 18 + yOffSet);	//Middle vertical
 			coordinates.add(new double[]{96 + xOffSet, 18 + yOffSet, PEN_UP});
 		}
+
+		//else if one of the options not selected do nothing
+		else{
+		    System.out.println("Nothing selected");
+        }
 
 
 		//write the new coordinates to file, if there are coordinates
 		if(!coordinates.isEmpty()){
 			writeCoordinatesToFile();
-		}
-		else{
-			System.out.println("No coordinates to do");
 		}
 	}
 
@@ -162,8 +171,6 @@ public class Arm {
 		//calculate the gradient between end and start points
 		double xGradient = endX - startX;
 		double yGradient = endY - startY;
-		System.out.println("xGradient: " + xGradient);
-        System.out.println("yGradient: " + yGradient);
 
 		//check if x gradient is negative. if not then want positive increment
         if(startX < endX) {
@@ -222,7 +229,7 @@ public class Arm {
         }
 	}
 
-
+    //takes all coordinates in the field, calculates the pwm values needed for that point, and prints to file
 	private void writeCoordinatesToFile(){
 		try{
 			//pen up for first value
@@ -231,18 +238,13 @@ public class Arm {
 			double firstRightArmAngle = findRightArmAngle(firstCoordinate[0], firstCoordinate[1]);
 			double firstLeftPwmValue = leftAnglePwmConverter(firstLeftArmAngle);
 			double firstRightPwmValue = rightAnglePwmConverter(firstRightArmAngle);
-			PrintStream writer = new PrintStream(new FileOutputStream(new File("drawLine.txt")));
+			PrintStream writer = new PrintStream(new FileOutputStream(new File("draw.txt")));
 			writer.println((int) firstLeftPwmValue + "," + (int) firstRightPwmValue + "," + PEN_UP);
-
 
 			//Calculate motor control signals and print to writer
 			for(double[] coordinate : coordinates){
-				System.out.println(coordinate[0] + ", " + coordinate[1]);
-
 				double leftArmAngle = findLeftArmAngle(coordinate[0], coordinate[1]);
 				double rightArmAngle = findRightArmAngle(coordinate[0], coordinate[1]);
-
-				System.out.println("Left angle: " + leftArmAngle + ". Right angle: " + rightArmAngle);
 
 				double leftPwmValue = leftAnglePwmConverter(leftArmAngle);
 				double rightPwmValue = rightAnglePwmConverter(rightArmAngle);
@@ -256,15 +258,19 @@ public class Arm {
 				}
 			}
 
+			//clear the coords field and close the printstream
+            System.out.println("Finished!");
 			coordinates.clear();
 			writer.flush();
 			writer.close();
-		}catch(IOException e ){System.out.println("FileWrite IOExecption" + e);}
+		}catch(IOException e ){System.out.println("FileWrite IOExecption: " + e);}
 	}
 
 
 	//find angle needed for right arm from tool position
 	private double findRightArmAngle(double toolX, double toolY) {
+        //y coordinate of right motor
+        int motorRightY = 480;
 
 		//distance between tool and motor
 		double toolMotorDistance = Math.sqrt( Math.pow(toolX - motorRightX, 2) + Math.pow(toolY - motorRightY, 2));
@@ -275,7 +281,6 @@ public class Arm {
 
 		//calculate distance between the midpoints and joints
 		double midpointJointDistance = Math.sqrt( Math.pow(armRadius, 2) - Math.pow(toolMotorDistance/2, 2));
-		System.out.println(midpointJointDistance);
 
 		//angle between motors and first pen coord
 		double motorJointAngle = Math.acos((motorRightX - toolX)/motorDistance);
@@ -291,6 +296,9 @@ public class Arm {
 
 	//find angle needed for left arm from tool position
 	private double findLeftArmAngle(double toolX, double toolY){
+        //y coordinate of left motor
+	    int motorLeftY = 480;
+
 		//distance between tool and motor
 		double toolMotorDistance = Math.sqrt( Math.pow(toolX - motorLeftX, 2) + Math.pow(toolY - motorLeftY, 2));
 
@@ -302,12 +310,8 @@ public class Arm {
 
 		double midpointJointDistance = Math.sqrt( Math.pow(armRadius, 2) - Math.pow(toolMotorDistance/2, 2));
 
-		System.out.println("MidpointJointDistance: " + midpointJointDistance);
-
 		//angle between motors and first pen coord
 		double motorJointAngle = Math.acos((motorLeftX - toolX)/motorDistance);
-
-		System.out.println("MidpointJointAngle: " + motorJointAngle);
 
 		//calculate joint positions for left joint
 		double jointX = motorLeftToolMidpointX - midpointJointDistance * Math.sin(motorJointAngle);
@@ -326,14 +330,14 @@ public class Arm {
 		return gradient * angle + constant;
 	}
 
-	//converts angle to PWM for left arm
+	//converts angle to PWM for left arm.
 	private double leftAnglePwmConverter(double angle){
 		double constant = 2807;
 		double gradient = 657;
 		return gradient * angle + constant;
 	}
 
-	//Main
+	//Main. creates new arm
 	public static void main(String[] args) {
 		new Arm();
 	}
