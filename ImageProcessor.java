@@ -5,7 +5,7 @@ import java.util.*;
 public class ImageProcessor {
 
     //fields
-    private static double THRESHOLD = 0.5;
+    private static int THRESHOLD = 200;
 
     //constructor
     public ImageProcessor(){
@@ -65,6 +65,9 @@ public class ImageProcessor {
     //finds the horizontal edges in a given image. return the image
     private int[][] findHorizontalEdges(int[][] image){
 
+        //create array to hold new values
+        int[][] horizontal = new int[image.length][image[0].length];
+
         //run through all of the pixels in the image
         for(int row = 0; row < image.length; row ++) {
             for(int col = 0; col < image[0].length; col ++){
@@ -74,22 +77,25 @@ public class ImageProcessor {
                     double value = (image[row-1][col-1]) + (2*image[row-1][col]) + (image[row-1][col+1])
                             + (-1*image[row+1][col-1]) + (-2*image[row+1][col]) + (-1*image[row+1][col+1]);
 
-                    image[row][col] = (int)value;
+                    horizontal[row][col] = (int)value;
                 }
                 //else 0 (can't run kernel)
                 else{
-                    image[row][col] = 0;
+                    horizontal[row][col] = 0;
                 }
-                //System.out.print(image[row][col] + " ");
+                //System.out.print(horizontal[row][col] + " ");
             }
             //System.out.println("");
         }
-        return image;
+        System.out.println("Horizontal kernel done!");
+        return horizontal;
     }
 
 
     //finds the edges in a given image
     private int[][] findVerticalEdges(int[][] image){
+
+        int[][] vertical = new int[image.length][image[0].length];
 
         //run through all of the pixels in the image
         for(int row = 0; row < image.length; row ++) {
@@ -100,17 +106,18 @@ public class ImageProcessor {
                     double value = (-1*image[row-1][col-1]) + (image[row-1][col+1]) + (-2*image[row][col-1])
                                     + (2*image[row][col+1]) + (-1*image[row+1][col-1]) + (image[row+1][col+1]);
 
-                    image[row][col] = (int)value;
+                    vertical[row][col] = (int)value;
                 }
                 //else 0 (can't run kernel)
                 else{
-                    image[row][col] = 0;
+                    vertical[row][col] = 0;
                 }
-                //System.out.print(image[row][col] + " ");
+                //System.out.print(vertical[row][col] + " ");
             }
             //System.out.println("");
         }
-        return image;
+        System.out.println("vertical kernel done!");
+        return vertical;
     }
 
 
@@ -122,10 +129,12 @@ public class ImageProcessor {
         //loop through all the pixels, combining the values using pythagoras
         for(int row = 0; row < image.length; row ++){
             for(int col = 0; col < image[0].length; col ++){
-
+                image[row][col] = (int) Math.sqrt( Math.pow(horizontal[row][col], 2) + Math.pow(vertical[row][col], 2));
+                System.out.print(image[row][col] + " ");
             }
+            System.out.println("");
         }
-
+        System.out.println("kernels combined!");
         return image;
     }
 }

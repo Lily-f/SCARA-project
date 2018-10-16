@@ -31,7 +31,7 @@ import java.util.*;
 public class Arm {
 	//fields
 	private static final int PEN_DOWN = 1500;
-	private static final int PEN_UP = 1300;
+	private static final int PEN_UP = 1400;
 	private int motorLeftX = 270;
 	private int motorRightX = 400;
 	private int motorDistance = motorRightX - motorLeftX;  //unit = pixels
@@ -111,7 +111,6 @@ public class Arm {
 			getCoords(xOffSet, 9 + yOffSet, 12 + xOffSet, 9 + yOffSet);	  	//middle horizontal
 			getCoords(12 + xOffSet, 9 + yOffSet, 12 + xOffSet, 18 + yOffSet); 	//bottom vertical
 			getCoords(12 + xOffSet, 18 + yOffSet, xOffSet, 18 + yOffSet);
-			coordinates.add(new double[]{xOffSet, 18 + yOffSet, PEN_UP});
 
 			// Letter 'K'
 			coordinates.add(new double[]{18 + xOffSet, yOffSet, PEN_UP});
@@ -119,20 +118,17 @@ public class Arm {
 			getCoords(18 + xOffSet, 9 + yOffSet, 30 + xOffSet, yOffSet); 	//middle to top diagonal
 			getCoords(18 + xOffSet, 9 + yOffSet, 30 + xOffSet, 18 + yOffSet);	//middle to bottom diagonal
 			//MUST CHANGE THIS FOR NEXT DRAWING POS
-			coordinates.add(new double[]{30 + xOffSet, 18 + yOffSet, PEN_UP});
 
 			// Letter 'Y'
             coordinates.add(new double[]{36 + xOffSet, yOffSet, PEN_UP});
 			getCoords(36 + xOffSet, yOffSet, 42 + xOffSet, 9 + yOffSet);	 	//left arm
-			getCoords(36 + xOffSet, 18 + yOffSet, 48 + xOffSet, yOffSet);	//Right arm
-			coordinates.add(new double[]{48 + xOffSet, yOffSet, PEN_UP});
+            getCoords(36 + xOffSet, 18 + yOffSet, 48 + xOffSet, yOffSet);	//Right arm
 
 			// Letter 'N'
             coordinates.add(new double[]{54 + xOffSet, 18 + yOffSet, PEN_UP});
 			getCoords(54 + xOffSet, 18 + yOffSet, 54 + xOffSet, yOffSet);	//Left vertical leg
 			getCoords(54 + xOffSet, yOffSet, 66 + xOffSet, 18 + yOffSet);	//Middle diagonal
 			getCoords(66 + xOffSet, 18 + yOffSet, 66 + xOffSet, yOffSet);	//Right vertical leg
-			coordinates.add(new double[]{66 + xOffSet, yOffSet, PEN_UP});
 
 			// Letter 'E'
             coordinates.add(new double[]{84 + xOffSet, yOffSet, PEN_UP});
@@ -140,13 +136,11 @@ public class Arm {
 			getCoords(72 + xOffSet, yOffSet, 72 + xOffSet, 18 + yOffSet);	//Left vertical
 			getCoords(72 + xOffSet, 18 + yOffSet, 84 + xOffSet, 18 + yOffSet);	//Bottom horizontal
 			getCoords(72 + xOffSet, 9 + yOffSet, 84 + xOffSet, 9 + yOffSet);		//Middle horizonatal
-			coordinates.add(new double[]{84 + xOffSet, 9 + yOffSet, PEN_UP});
 
 			// Letter 'T'
             coordinates.add(new double[]{90 + xOffSet, yOffSet, PEN_UP});
 			getCoords(90 + xOffSet, yOffSet, 102 + xOffSet, yOffSet);	//Top horizontal
 			getCoords(96 + xOffSet, yOffSet, 96 + xOffSet, 18 + yOffSet);	//Middle vertical
-			coordinates.add(new double[]{96 + xOffSet, 18 + yOffSet, PEN_UP});
 		}
 
 		//else if one of the options not selected do nothing
