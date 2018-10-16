@@ -5,7 +5,10 @@ import java.util.*;
 public class ImageProcessor {
 
     //fields
-    private static int THRESHOLD = 200;
+    private static int THRESHOLD1 = 200;
+    private static int THRESHOLD2 = 250;
+    //create arrayList to hold all coordinates for edges
+    private List<double[]> cannyCoords = new ArrayList<>();
 
     //constructor
     public ImageProcessor(){
@@ -16,6 +19,10 @@ public class ImageProcessor {
             int[][] horizontal = findHorizontalEdges(image);
             int[][] vertical = findVerticalEdges(image);
             int[][] combinedKernels = combineKernels(horizontal, vertical);
+
+            //fill the arraylist with coords for points. (recursivly)
+            cannyCoords.add(findEdges(combinedKernels, 1, 1));
+
         }
     }
 
@@ -137,4 +144,59 @@ public class ImageProcessor {
         System.out.println("kernels combined!");
         return image;
     }
+
+
+    //finds edges from a given image
+    private double[] findEdges(int[][] image, int row, int col){
+
+        //check if ppixel is strong edge, to start new edge to draw
+        if(image[row][col] > THRESHOLD1){
+
+            //add coordinates to arraylist
+            cannyCoords.add(new double[]{row, col});
+
+            //find max value of adjacent pixels
+            int max = 0;
+            if(image[row - 1][ col - 1] > max){
+                max = image[row-1][col-1];
+            }
+            if(image[row - 1][ col] > max){
+                max = image[row-1][col];
+            }
+            if(image[row - 1][ col + 1] > max){
+                max = image[row-1][col+1];
+            }
+            if(image[row][ col - 1] > max){
+                max = image[row][col-1];
+            }
+            if(image[row][ col + 1] > max){
+                max = image[row][col+1];
+            }
+            if(image[row + 1][ col - 1] > max){
+                max = image[row+1][col-1];
+            }
+            if(image[row + 1][ col] > max){
+                max = image[row+1][col];
+            }
+            if(image[row + 1][ col + 1] > max){
+                max = image[row-1][col+1];
+            }
+            if(image[row + 1][ col + 1] > max){
+                max = image[row+1][col+1];
+            }
+
+            //check max value against threshold2. if less terminate edge
+            if(max < THRESHOLD2){
+                return new double[]{row, col, Arm.PEN_DOWN};
+            }
+
+            //move to new pixel
+            //exase current from image
+            //repeat?
+
+        }
+
+        return null;
+    }
+
 }

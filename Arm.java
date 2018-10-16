@@ -30,8 +30,8 @@ import java.io.PrintStream;
 import java.util.*;
 public class Arm {
 	//fields
-	private static final int PEN_DOWN = 1500;
-	private static final int PEN_UP = 1400;
+	public static final int PEN_DOWN = 1500;
+	public static final int PEN_UP = 1300;
 	private int motorLeftX = 270;
 	private int motorRightX = 400;
 	private int motorDistance = motorRightX - motorLeftX;  //unit = pixels
@@ -44,7 +44,7 @@ public class Arm {
 	private Arm() {
 
 		//create a new ImageProcessor object, and get the first image to load
-		ImageProcessor imageProcessor = new ImageProcessor();
+		//ImageProcessor imageProcessor = new ImageProcessor();
 
         //get user input on what type of thing to draw
         Scanner input = new Scanner(System.in);
@@ -103,9 +103,10 @@ public class Arm {
 		else if (direction == 5) {
 			//offset to draw word in middle of page
 			int xOffSet = 280;
-			int yOffSet = 100;
+			int yOffSet = 140;
 
 			// Letter 'S'
+			coordinates.add(new double[]{12 + xOffSet, yOffSet, PEN_UP});
 			getCoords(12 + xOffSet, yOffSet, xOffSet, yOffSet);		//top horizontal
 			getCoords(xOffSet, yOffSet, xOffSet, 9 + yOffSet);    	//top vertical
 			getCoords(xOffSet, 9 + yOffSet, 12 + xOffSet, 9 + yOffSet);	  	//middle horizontal
@@ -135,7 +136,8 @@ public class Arm {
 			getCoords(84 + xOffSet, yOffSet, 72 + xOffSet, yOffSet);		//Top horizontal
 			getCoords(72 + xOffSet, yOffSet, 72 + xOffSet, 18 + yOffSet);	//Left vertical
 			getCoords(72 + xOffSet, 18 + yOffSet, 84 + xOffSet, 18 + yOffSet);	//Bottom horizontal
-			getCoords(72 + xOffSet, 9 + yOffSet, 84 + xOffSet, 9 + yOffSet);		//Middle horizonatal
+            coordinates.add(new double[]{72 + xOffSet, 9 + yOffSet, PEN_UP});
+			getCoords(72 + xOffSet, 6 + yOffSet, 84 + xOffSet, 6 + yOffSet);		//Middle horizonatal
 
 			// Letter 'T'
             coordinates.add(new double[]{90 + xOffSet, yOffSet, PEN_UP});
@@ -226,14 +228,7 @@ public class Arm {
     //takes all coordinates in the field, calculates the pwm values needed for that point, and prints to file
 	private void writeCoordinatesToFile(){
 		try{
-			//pen up for first value
-			double[] firstCoordinate = coordinates.get(0);
-			double firstLeftArmAngle = findLeftArmAngle(firstCoordinate[0], firstCoordinate[1]);
-			double firstRightArmAngle = findRightArmAngle(firstCoordinate[0], firstCoordinate[1]);
-			double firstLeftPwmValue = leftAnglePwmConverter(firstLeftArmAngle);
-			double firstRightPwmValue = rightAnglePwmConverter(firstRightArmAngle);
 			PrintStream writer = new PrintStream(new FileOutputStream(new File("draw.txt")));
-			writer.println((int) firstLeftPwmValue + "," + (int) firstRightPwmValue + "," + PEN_UP);
 
 			//Calculate motor control signals and print to writer
 			for(double[] coordinate : coordinates){
@@ -246,7 +241,11 @@ public class Arm {
 				if (coordinate[2] == PEN_UP){
 					writer.println((int) leftPwmValue + "," + (int) rightPwmValue + "," + PEN_UP);
 				}
-				writer.println( (int)leftPwmValue + "," + (int)rightPwmValue + "," + PEN_DOWN);
+				else {
+                    writer.println((int) leftPwmValue + "," + (int) rightPwmValue + "," + PEN_DOWN);
+                }
+
+				//if last coordinate, pull pen up when done
 				if (coordinate == coordinates.get(coordinates.size() - 1)){
 					writer.println((int) leftPwmValue + "," + (int) rightPwmValue + "," + PEN_UP);
 				}
