@@ -43,14 +43,10 @@ public class Arm {
 	//constructor
 	private Arm() {
 
-		//create a new ImageProcessor object, and get the first image to load
-		//ImageProcessor imageProcessor = new ImageProcessor();
-
         //get user input on what type of thing to draw
         Scanner input = new Scanner(System.in);
-        System.out.println("Enter 0 to 5 inclusive for horizontal/vertical/diagonal/square/circle (-1 for nothing): ");
+        System.out.println("Enter 0 to 6 inclusive for horizontal/vertical/diagonal/square/circle/image (-1 for nothing): ");
         int direction = input.nextInt();
-        input.close();
 
 		drawLine(direction);
 	}
@@ -143,6 +139,22 @@ public class Arm {
             coordinates.add(new double[]{90 + xOffSet, yOffSet, PEN_UP});
 			getCoords(90 + xOffSet, yOffSet, 102 + xOffSet, yOffSet);	//Top horizontal
 			getCoords(96 + xOffSet, yOffSet, 96 + xOffSet, 18 + yOffSet);	//Middle vertical
+		}
+
+		//else draw image with the imageProcessor
+		else if(direction == 6){
+			System.out.println("Drawing image!");
+
+			//add an offset so the image is drawn in the center
+            int xOffset = 280;
+            int yOffset = 140;
+
+            //create a new ImageProcessor object, and get the first image to load
+            ImageProcessor imageProcessor = new ImageProcessor();
+            for (double[] cannyCoordinates : imageProcessor.getCannyCoords()){
+                System.out.println("Coordinates of edge pixel: " + cannyCoordinates[0] + " " + cannyCoordinates[1]);
+                coordinates.add(new double[]{cannyCoordinates[0]+xOffset, cannyCoordinates[1]+yOffset, PEN_DOWN});
+            }
 		}
 
 		//else if one of the options not selected do nothing
@@ -318,15 +330,15 @@ public class Arm {
 
 	//converts angle to PWM for right arm
 	private double rightAnglePwmConverter(double angle){
-		double constant = 2343;
-		double gradient = 657;
+		double constant = 1985;
+		double gradient = 485;
 		return gradient * angle + constant;
 	}
 
 	//converts angle to PWM for left arm.
 	private double leftAnglePwmConverter(double angle){
-		double constant = 2807;
-		double gradient = 657;
+		double constant = 3686;
+		double gradient = 857;
 		return gradient * angle + constant;
 	}
 

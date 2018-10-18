@@ -5,8 +5,8 @@ import java.util.*;
 public class ImageProcessor {
 
     //fields
-    private static int THRESHOLD1 = 200;
-    private static int THRESHOLD2 = 250;
+    private int[][] edgeValues;
+
     //create arrayList to hold all coordinates for edges
     private List<double[]> cannyCoords = new ArrayList<>();
 
@@ -18,10 +18,14 @@ public class ImageProcessor {
         if(image != null) {
             int[][] horizontal = findHorizontalEdges(image);
             int[][] vertical = findVerticalEdges(image);
-            int[][] combinedKernels = combineKernels(horizontal, vertical);
+            edgeValues = combineKernels(horizontal, vertical);
 
-            //fill the arraylist with coords for points. (recursivly)
-            cannyCoords.add(findEdges(combinedKernels, 1, 1));
+            //fill the arraylist with coords for points.
+            for(int row = 1; row < edgeValues.length - 1; row ++){
+                for(int col = 1; col < edgeValues[0].length - 1; col ++){
+                    findEdges(row, col);
+                }
+            }
 
         }
     }
@@ -130,6 +134,7 @@ public class ImageProcessor {
 
     //combine 2 given 2d arrays, for combining edge finding kernals
     private int[][] combineKernels(int[][] horizontal, int[][] vertical){
+
         //create new 2d array for final image
         int[][] image = new int[horizontal.length][horizontal[0].length];
 
@@ -147,56 +152,100 @@ public class ImageProcessor {
 
 
     //finds edges from a given image
-    private double[] findEdges(int[][] image, int row, int col){
+    private void findEdges(int row, int col){
 
-        //check if ppixel is strong edge, to start new edge to draw
-        if(image[row][col] > THRESHOLD1){
+        int threshold1 = 200;
+        int threshold2 = 200;
+        int minLineLength = 30; //number of pixels needed before a line will be drawn
+        int currentLineLength = 0;
+        List<double[]> edgeCoords = new ArrayList<>();  //current coords to copy to cannycoords if line is big enough
 
-            //add coordinates to arraylist
-            cannyCoords.add(new double[]{row, col});
+        //check if pixel is strong edge, to start new edge to draw
+        if(edgeValues[row][col] > threshold1){
+            //System.out.println("Edge Started");
 
-            //find max value of adjacent pixels
-            int max = 0;
-            if(image[row - 1][ col - 1] > max){
-                max = image[row-1][col-1];
-            }
-            if(image[row - 1][ col] > max){
-                max = image[row-1][col];
-            }
-            if(image[row - 1][ col + 1] > max){
-                max = image[row-1][col+1];
-            }
-            if(image[row][ col - 1] > max){
-                max = image[row][col-1];
-            }
-            if(image[row][ col + 1] > max){
-                max = image[row][col+1];
-            }
-            if(image[row + 1][ col - 1] > max){
-                max = image[row+1][col-1];
-            }
-            if(image[row + 1][ col] > max){
-                max = image[row+1][col];
-            }
-            if(image[row + 1][ col + 1] > max){
-                max = image[row-1][col+1];
-            }
-            if(image[row + 1][ col + 1] > max){
-                max = image[row+1][col+1];
+            //start following the edge
+            boolean following = true;
+            int rowDirection = 0;
+            int colDirection = 0;
+
+            while(following) {
+                //System.out.println("following edge! " + (row + rowDirection) + " " + (col + colDirection));
+
+                //add coordinates to arrayList, and increase line length
+                edgeCoords.add(new double[]{row + rowDirection, col + colDirection});
+                currentLineLength ++;
+
+                if(row + rowDirection == 0 || col + colDirection == 0){
+                    return;
+                }
+
+                //find max value of adjacent pixels. go to this max
+                int max = Math.max(Math.max(Math.max(Math.max(Math.max(Math.max(Math.max(
+                        edgeValues[row+1+rowDirection][col+1+colDirection],  edgeValues[row+1+rowDirection][col+colDirection]),
+                        edgeValues[row+1+rowDirection][col-1+colDirection]), edgeValues[row+rowDirection][col+1+colDirection]),
+                        edgeValues[row+rowDirection][col - 1+colDirection]), edgeValues[row-1+rowDirection][col+1+colDirection]),
+                        edgeValues[row-1+rowDirection][col+colDirection]),   edgeValues[row-1+rowDirection][col-1+colDirection]);
+
+                //System.out.println("Max pixel value: " + max);
+
+                //move to adjacent pixel with max value
+                if (edgeValues[row - 1 + rowDirection][col - 1 + colDirection] == max) {
+                    rowDirection --;
+                    colDirection --;
+                }
+                else if (edgeValues[row - 1 + rowDirection][col + colDirection] == max) {
+                    rowDirection --;
+                }
+                else if (edgeValues[row - 1 + rowDirection][col + 1 + colDirection] == max) {
+                    rowDirection --;
+                    colDirection ++;
+                }
+                else if (edgeValues[row + rowDirection][col - 1 + colDirection] == max) {
+                    colDirection --;
+                }
+                else if (edgeValues[row + rowDirection][col + 1 + colDirection] == max) {
+                    colDirection ++;
+                }
+                else if (edgeValues[row + 1 + rowDirection][col - 1 + colDirection] == max) {
+                    rowDirection ++;
+                    colDirection --;
+                }
+                else if (edgeValues[row + 1 + rowDirection][col + colDirection] == max) {
+                    rowDirection ++;
+                }
+                else if (edgeValues[row + 1 + rowDirection][col + 1 + colDirection] == max) {
+                    rowDirection --;
+                    colDirection ++;
+                }
+                else if (edgeValues[row + 1 + rowDirection][col + 1 + colDirection] == max) {
+                    rowDirection ++;
+                    colDirection ++;
+                }
+
+                //check max value against threshold2. if less terminate edge
+                if (max < threshold2) {
+                    following = false;
+                    //System.out.println("Edge dropped!");
+                }
+
+                //erase current pixel from image
+                edgeValues[row + rowDirection][col + colDirection] = 0;
             }
 
-            //check max value against threshold2. if less terminate edge
-            if(max < THRESHOLD2){
-                return new double[]{row, col, Arm.PEN_DOWN};
+            //check line was big enough to copy over to canny coords
+            if(currentLineLength >= minLineLength){
+                System.out.println("Line was long enough! " + currentLineLength);
+                for(double[] coord : edgeCoords){
+                    cannyCoords.add(new double[]{coord[0], coord[1]});
+                }
             }
-
-            //move to new pixel
-            //exase current from image
-            //repeat?
 
         }
-
-        return null;
     }
 
+    //get the list of canny Coordinates
+    public List<double[]> getCannyCoords() {
+        return cannyCoords;
+    }
 }
